@@ -1,0 +1,36 @@
+LOCUS       FLC_synth                698 bp    mRNA             UNK 01-JAN-1980
+DEFINITION  Synthetic teaching record modeled on Arabidopsis thaliana FLC
+            (AT5G10140), mRNA, complete cds.
+ACCESSION   TEACH_FLC_001
+VERSION     TEACH_FLC_001
+KEYWORDS    .
+SOURCE      Arabidopsis thaliana
+  ORGANISM  Arabidopsis thaliana (synthetic teaching sequence)
+            .
+FEATURES             Location/Qualifiers
+     gene            51..638
+                     /gene="FLC"
+                     /locus_tag="AT5G10140"
+     CDS             51..638
+                     /gene="FLC"
+                     /product="MADS-box transcription factor FLC"
+                     /translation="MKKVNVQSRTPNECPLEVQFVIDLTHIRKDITNRQDYPEQKIIQE
+                     SIRDYSLVGTKLGRLYPGGIHMAYARIERFFISGTRSMLTRSMKRANWQHHFLTSFTAA
+                     PGHEMLRTHSNSCAVLLAYISSMYVVVEFKFFSNLTRPLIDSEAHTLSSLATILFAFVV
+                     LATNSSRDERVTSINTLALSAWYSCAYLVAQV"
+     5'UTR           1..50
+     3'UTR           639..698
+ORIGIN
+        1 cgcggaatat cttttgtaag atctcgtaat tcggcctatg attgtcgcat atgaagaagg
+       61 tcaatgtcca atctagaact ccaaacgagt gtccgcttga agttcaattc gtaatagatc
+      121 tgacacacat tcggaaggat atcaccaaca gacaagacta ccccgaacag aagattatcc
+      181 aggaatctat aagagattac agtctagtag gaacaaaact aggacggctc tatcccggcg
+      241 gtattcacat ggcttatgct agaatagaac gattttttat ttccgggact cgttctatgc
+      301 taacccgttc gatgaagaga gctaattggc aacatcactt cttgacctca ttcacagctg
+      361 ctcccggcca cgagatgttg cggacgcatt cgaatagctg cgctgtactc ttggcttata
+      421 tttcgtccat gtatgtagtt gttgaattca agttcttttc taatctgact cggcctttaa
+      481 tagatagcga ggctcatact ttatcttcgt tagctaccat actttttgct ttcgttgtat
+      541 tagcgactaa ttcctctcgt gacgagagag taacaagcat aaatactttg gctctgagcg
+      601 cttggtattc atgcgcctat cttgtggccc aagtttaatc tctcgagtgg acgttcaccg
+      661 gaccagggaa gataagtcct tgttgaaaag gaataaat
+//

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 4: The Seq Object: Transcription & Translation</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 1 &middot; Session 4 of 20 &middot; 2 hours</div>
+    <h1>The Seq Object: Transcription & Translation</h1>
+    <div class="meta"><span class="tag">Seq.transcribe()</span><span class="tag">Seq.translate()</span><span class="tag">Seq.reverse_complement()</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Use Seq.reverse_complement() and understand strand orientation in genes.</div></div><div class="obj"><span class="badge-num">2</span><div>Transcribe DNA to mRNA and translate mRNA/CDS to protein with Biopython.</div></div><div class="obj"><span class="badge-num">3</span><div>Understand reading frames and why frame matters for translation.</div></div><div class="obj"><span class="badge-num">4</span><div>Translate a real plant CDS and interpret the resulting protein.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">📁 AT5G10140_FLC_synthetic_cds.fasta</span></div>
+  </div>
+
+  <div class="slide"><h2>Strands and reverse complement</h2>
+  <p>DNA is double-stranded and antiparallel. A gene can be encoded on either strand. Biopython always
+  stores what you give it, and computes the other strand on demand:</p>
+  <pre><code>from Bio.Seq import Seq
+gene = Seq("ATGGCTAGCTAG")
+print(gene.complement())          # base-by-base complement, same direction
+print(gene.reverse_complement())  # what's actually on the opposite strand, 5'->3'</code></pre>
+  <div class="callout plant">When you download a plant gene from NCBI and it's annotated on the "minus
+  strand", you must reverse-complement it before translating — otherwise you'll get nonsense protein.</div>
+  </div>
+<div class="slide"><h2>Transcription: DNA → mRNA</h2>
+  <pre><code>coding_dna = Seq("ATGGCTAGCTAG")
+mrna = coding_dna.transcribe()
+print(mrna)   # AUGGCUAGCUAG  (T -> U, that's it)</code></pre>
+  <p>Transcription (in Biopython's simplified model) is literally just T→U substitution of the
+  <b>coding/sense strand</b> — because the coding strand already has the same sequence as the mRNA
+  (except U instead of T). The <i>template strand</i> is what RNA polymerase actually reads, but Biopython
+  works with the coding strand by convention since that's what's usually stored in databases.</p>
+  </div>
+<div class="slide"><h2>Translation: mRNA/DNA → Protein</h2>
+  <pre><code>coding_dna = Seq("ATGGCTAGCTAG")
+protein = coding_dna.translate()
+print(protein)              # M A S *      (* = stop codon)
+print(coding_dna.translate(to_stop=True))   # M A S   (stop symbol dropped)</code></pre>
+  <p>Biopython can translate DNA directly (skipping the mRNA intermediate) — the genetic code table is
+  the same. Use <code>to_stop=True</code> when you just want the protein without a trailing <code>*</code>.</p>
+  <div class="callout warn"><b>Reading frame matters!</b> Translation reads codons (groups of 3) starting
+  exactly where you tell it to. If your sequence isn't trimmed to start at the true <code>ATG</code>, you'll
+  get garbage. Real CDS sequences from GenBank are already frame-corrected for you.</div>
+  </div>
+<div class="slide"><h2>Putting it together on a real plant gene</h2>
+  <pre><code>from Bio import SeqIO
+record = SeqIO.read("AT5G10140_FLC_synthetic_cds.fasta", "fasta")
+protein = record.seq.translate(to_stop=True)
+print("Protein length:", len(protein))
+print(protein)</code></pre>
+  <div class="callout plant">FLC encodes a <b>MADS-box transcription factor</b> — a family of proteins with a
+  highly conserved DNA-binding domain found across all flowering plants, controlling flower development,
+  fruit ripening, and (for FLC specifically) blocking flowering until winter cold is sensed
+  (vernalization). Translating it turns an abstract DNA string into a molecule with real biological identity.</div>
+  </div>
+
+  <div class="navrow">
+    <div><a href="../session03_fasta_genbank_seqio/slides.html">← Session 3</a></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><a href="../session05_sequence_stats_gc_codon/slides.html">Session 5 →</a></div>
+  </div>
+</div>
+</body>
+</html>

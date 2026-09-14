@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 6: Talking to NCBI: Bio.Entrez</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 2 &middot; Session 6 of 20 &middot; 2 hours</div>
+    <h1>Talking to NCBI: Bio.Entrez</h1>
+    <div class="meta"><span class="tag">Bio.Entrez.esearch</span><span class="tag">Bio.Entrez.efetch</span><span class="tag">Bio.Entrez.read</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Understand what NCBI Entrez is and the etiquette of programmatic access (email, API key, rate limits).</div></div><div class="obj"><span class="badge-num">2</span><div>Use Bio.Entrez.esearch to find records by search term.</div></div><div class="obj"><span class="badge-num">3</span><div>Use Bio.Entrez.efetch to download a real sequence record in FASTA/GenBank format.</div></div><div class="obj"><span class="badge-num">4</span><div>Know how to adapt today's code the moment you have internet access outside this sandbox.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">no new dataset</span></div>
+  </div>
+
+  <div class="slide"><h2>What is Entrez?</h2>
+  <p>Entrez is NCBI's search-and-retrieval system spanning dozens of databases (nucleotide, protein,
+  PubMed, taxonomy, ...). <code>Bio.Entrez</code> is a thin, polite Python wrapper around NCBI's E-utilities
+  web API.</p>
+  <div class="callout warn"><b>Etiquette rules NCBI enforces:</b>
+  <ul>
+    <li>Always set <code>Entrez.email</code> to a real address before any call.</li>
+    <li>Without an API key: max 3 requests/second. With a free API key: 10/second.</li>
+    <li>Don't hammer NCBI with large automated jobs during U.S. peak hours if avoidable.</li>
+  </ul></div>
+  <div class="callout">This training sandbox has no outbound internet to NCBI, so today's demo shows the
+  exact real code and its expected output — run it verbatim on your own machine/classroom (which does have
+  internet) to see it live.</div>
+  </div>
+<div class="slide"><h2>Step 1 — esearch: find record IDs</h2>
+  <pre><code>from Bio import Entrez
+
+Entrez.email = "you@yourschool.edu"   # REQUIRED — NCBI wants to know who's asking
+
+handle = Entrez.esearch(db="nucleotide",
+                         term="Arabidopsis thaliana FLC mRNA complete cds",
+                         retmax=5)
+record = Entrez.read(handle)
+handle.close()
+print(record["Count"])     # total number of matching records at NCBI
+print(record["IdList"])    # a list of NCBI internal IDs (GI/UID numbers)</code></pre>
+  <div class="callout plant">Try search terms like <code>"Oryza sativa SD1 gene"</code> (the rice
+  Green-Revolution semi-dwarf gene) or <code>"Zea mays DREB2A"</code> — Entrez's free-text search is
+  forgiving and a great way to explore what's available for a species/gene you care about.</div>
+  </div>
+<div class="slide"><h2>Step 2 — efetch: download the actual record</h2>
+  <pre><code>handle = Entrez.efetch(db="nucleotide", id=record["IdList"][0],
+                        rettype="gb", retmode="text")
+gb_text = handle.read()
+handle.close()
+print(gb_text[:500])   # the raw GenBank flat file, as text
+
+# Or parse it straight into a SeqRecord:
+from Bio import SeqIO
+handle = Entrez.efetch(db="nucleotide", id=record["IdList"][0],
+                        rettype="gb", retmode="text")
+seq_record = SeqIO.read(handle, "genbank")
+handle.close()
+print(seq_record.id, len(seq_record.seq), seq_record.annotations["organism"])</code></pre>
+  </div>
+<div class="slide"><h2>Building a small local library of plant genes</h2>
+  <p>A common real workflow: search for a gene across several species, then <code>efetch</code> each hit and
+  save it locally so the rest of your pipeline (alignment, phylogenetics) never needs the internet again.</p>
+  <pre><code>species_list = ["Arabidopsis thaliana", "Oryza sativa", "Zea mays"]
+for sp in species_list:
+    term = f"{sp}[Organism] AND DREB2A[Gene]"
+    ids = Entrez.read(Entrez.esearch(db="nucleotide", term=term, retmax=1))["IdList"]
+    if ids:
+        rec = SeqIO.read(Entrez.efetch(db="nucleotide", id=ids[0], rettype="gb", retmode="text"), "genbank")
+        SeqIO.write(rec, f"{sp.replace(' ', '_')}_DREB2A.gb", "genbank")</code></pre>
+  <div class="callout exercise">This is exactly the pattern behind <code>data/DREB2A_plant_orthologs.fasta</code>
+  — we built that file for you offline; today's exercise is writing the equivalent live-fetch code so you
+  can rebuild (and extend) it with real NCBI records the moment you're teaching with internet access.</div>
+  </div>
+
+  <div class="navrow">
+    <div><a href="../session05_sequence_stats_gc_codon/slides.html">← Session 5</a></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><a href="../session07_genbank_features_annotation/slides.html">Session 7 →</a></div>
+  </div>
+</div>
+</body>
+</html>

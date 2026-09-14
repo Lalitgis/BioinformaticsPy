@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 1: Welcome to Plant Bioinformatics + Biology Primer</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 1 &middot; Session 1 of 20 &middot; 2 hours</div>
+    <h1>Welcome to Plant Bioinformatics + Biology Primer</h1>
+    <div class="meta"><span class="tag">Course overview</span><span class="tag">No coding yet</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Explain what bioinformatics is and why plant science needs it (crop genomics, breeding, stress biology).</div></div><div class="obj"><span class="badge-num">2</span><div>Recall the central dogma (DNA → RNA → Protein) and how it maps onto real plant traits.</div></div><div class="obj"><span class="badge-num">3</span><div>Understand genome scale in crops (Arabidopsis ~135 Mb vs maize ~2.3 Gb vs wheat ~16 Gb) and why that matters computationally.</div></div><div class="obj"><span class="badge-num">4</span><div>See the roadmap for the full 20-session course and how each week builds on the last.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">no new dataset</span></div>
+  </div>
+
+  <div class="slide"><h2>Why bioinformatics, why plants?</h2>
+  <p>Bioinformatics is the use of computation to store, search, and interpret biological data —
+  DNA/RNA/protein sequences, genome annotations, expression measurements, and genetic variation.</p>
+  <div class="callout plant"><b>🌾 Plant angle:</b> Plant biology generates enormous, messy datasets fast:
+  crop genomes (many are huge and highly repetitive/polyploid — wheat is hexaploid!), germplasm collections
+  with thousands of accessions, RNA-seq under stress treatments (drought, salinity, pathogens), and
+  marker-assisted breeding programs. A plant breeder or physiologist who can script is a huge advantage.</p>
+  <ul>
+    <li><b>Genomics</b> — sequencing and comparing whole genomes (e.g., rice vs its wild relatives).</li>
+    <li><b>Transcriptomics</b> — which genes turn on/off under drought, cold, pathogen attack.</li>
+    <li><b>Population genetics</b> — SNPs across germplasm panels for breeding & GWAS.</li>
+    <li><b>Phylogenetics</b> — evolutionary relationships among crop species and wild relatives.</li>
+  </ul>
+  </div>
+<div class="slide"><h2>The Central Dogma — the spine of everything we'll code</h2>
+  <p>DNA → (transcription) → RNA → (translation) → Protein. Every Biopython exercise in this course is,
+  underneath, manipulating one of these three molecules or comparing many copies of them across species/individuals.</p>
+  <table>
+   <tr><th>Molecule</th><th>Alphabet</th><th>Biopython object</th><th>Plant example</th></tr>
+   <tr><td>DNA</td><td>A,C,G,T</td><td><code>Bio.Seq.Seq</code></td><td>FLC gene controlling flowering time in Arabidopsis</td></tr>
+   <tr><td>RNA</td><td>A,C,G,U</td><td><code>Seq.transcribe()</code></td><td>mRNA of a drought-responsive DREB gene</td></tr>
+   <tr><td>Protein</td><td>20 amino acids</td><td><code>Seq.translate()</code></td><td>NBS-LRR disease-resistance protein</td></tr>
+  </table>
+  <div class="callout">A <b>gene</b> = a stretch of DNA. Its <b>CDS</b> (coding sequence) is the part that gets translated,
+  starting at <code>ATG</code> and ending at a stop codon (<code>TAA/TAG/TGA</code>). Everything else in the
+  transcript (UTRs, introns) is regulatory or gets spliced out.</div>
+  </div>
+<div class="slide"><h2>Genome scale — why plants are a special computational challenge</h2>
+  <table>
+   <tr><th>Species</th><th>Genome size</th><th>Ploidy</th><th>Why it matters</th></tr>
+   <tr><td><i>Arabidopsis thaliana</i></td><td>~135 Mb</td><td>diploid</td><td>small model plant — great for learning</td></tr>
+   <tr><td><i>Oryza sativa</i> (rice)</td><td>~430 Mb</td><td>diploid</td><td>major crop, well-annotated reference</td></tr>
+   <tr><td><i>Zea mays</i> (maize)</td><td>~2.3 Gb</td><td>diploid, very repetitive</td><td>~85% transposable elements!</td></tr>
+   <tr><td><i>Triticum aestivum</i> (bread wheat)</td><td>~16 Gb</td><td>hexaploid (6 copies)</td><td>3 sub-genomes to disentangle</td></tr>
+  </table>
+  <p>This is why we start on tiny, clean examples (single genes, short regions) before ever touching a
+  whole crop genome — the biological logic is identical, only the scale changes.</p>
+  </div>
+<div class="slide"><h2>Course roadmap (4 weeks / 20 sessions × 2 hours)</h2>
+  <div class="grid2">
+    <div><h3>Week 1 — Foundations</h3><ul>
+      <li>Biology primer, Python/Biopython setup</li>
+      <li>FASTA/GenBank parsing with <code>SeqIO</code></li>
+      <li><code>Seq</code> objects: transcription, translation</li>
+      <li>Sequence statistics, GC content, codon usage</li>
+    </ul></div>
+    <div><h3>Week 2 — Sequence analysis & databases</h3><ul>
+      <li>NCBI Entrez programmatic access</li>
+      <li>GenBank features & annotation</li>
+      <li>Pairwise and multiple sequence alignment</li>
+      <li>BLAST-based sequence identification</li>
+    </ul></div>
+    <div><h3>Week 3 — Evolution & molecular tools</h3><ul>
+      <li>Building & visualizing phylogenetic trees</li>
+      <li>Restriction sites & marker (CAPS) design</li>
+      <li>Protein motifs & domain analysis</li>
+      <li>Population genetics & VCF files</li>
+    </ul></div>
+    <div><h3>Week 4 — Genomics & capstone</h3><ul>
+      <li>Genome regions & feature annotation</li>
+      <li>Gene Ontology / functional annotation</li>
+      <li>RNA-seq expression analysis basics</li>
+      <li>GWAS & Manhattan plots</li>
+      <li><b>Capstone:</b> full mini-pipeline + how to teach this</li>
+    </ul></div>
+  </div>
+  </div>
+<div class="slide"><h2>How each 2-hour session is structured (for you as the tutor)</h2>
+  <ol>
+    <li><b>0:00–0:15</b> — Recap + today's biology concept (use the slides as-is, or adapt).</li>
+    <li><b>0:15–0:45</b> — Live-coded demo (<code>code_along.py</code> in each session folder — read it top to bottom with your students).</li>
+    <li><b>0:45–1:30</b> — Guided hands-on exercise on real(istic) plant data (<code>exercise.md</code>).</li>
+    <li><b>1:30–1:50</b> — Students present/compare results; discuss common bugs.</li>
+    <li><b>1:50–2:00</b> — Wrap-up + preview of next session.</li>
+  </ol>
+  <div class="callout exercise"><b>Tutor tip:</b> Every dataset in <code>/data</code> is synthetic-but-realistic
+  (built to mirror real plant biology) so the course works with zero internet dependency. Each dataset's header
+  comment tells you the real NCBI/TAIR record it represents and gives the exact Entrez search term so you (or
+  advanced students) can fetch the live real version once you have normal internet access.</div>
+  </div>
+
+  <div class="navrow">
+    <div><span></span></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><a href="../session02_python_biopython_setup/slides.html">Session 2 →</a></div>
+  </div>
+</div>
+</body>
+</html>

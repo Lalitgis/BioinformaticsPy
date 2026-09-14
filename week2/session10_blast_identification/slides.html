@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 10: Sequence Identification with BLAST</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 2 &middot; Session 10 of 20 &middot; 2 hours</div>
+    <h1>Sequence Identification with BLAST</h1>
+    <div class="meta"><span class="tag">Bio.Blast.NCBIWWW.qblast</span><span class="tag">Bio.Blast.NCBIXML</span><span class="tag">local BLAST+ via subprocess</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Explain what BLAST does and why it's the single most-used bioinformatics tool in the world.</div></div><div class="obj"><span class="badge-num">2</span><div>Build a local BLAST database from a plant gene family FASTA file.</div></div><div class="obj"><span class="badge-num">3</span><div>Run blastn locally with Biopython/subprocess and interpret the output table.</div></div><div class="obj"><span class="badge-num">4</span><div>Use NCBIWWW.qblast() to run BLAST against NCBI's live database (code shown for real internet use).</div></div><div class="obj"><span class="badge-num">5</span><div>Identify an unknown plant sequence and justify the identification using E-value, identity, and score.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">📁 mystery_sequence_session10.fasta</span><span class="tag">📁 DREB2A_plant_orthologs.fasta</span></div>
+  </div>
+
+  <div class="slide"><h2>What BLAST actually does</h2>
+  <p><b>BLAST</b> (Basic Local Alignment Search Tool) takes a query sequence and rapidly searches a
+  (potentially huge) database for statistically significant local alignments — "what in this haystack
+  looks like my needle?" It trades a little alignment optimality for enormous speed via a clever seed-and-
+  extend heuristic, which is why it can search all of GenBank in seconds.</p>
+  <table>
+   <tr><th>Program</th><th>Query</th><th>Database</th></tr>
+   <tr><td><code>blastn</code></td><td>nucleotide</td><td>nucleotide</td></tr>
+   <tr><td><code>blastp</code></td><td>protein</td><td>protein</td></tr>
+   <tr><td><code>blastx</code></td><td>nucleotide (translated, 6 frames)</td><td>protein</td></tr>
+   <tr><td><code>tblastn</code></td><td>protein</td><td>nucleotide (translated)</td></tr>
+  </table>
+  </div>
+<div class="slide"><h2>Key output columns: identity, E-value, bit score</h2>
+  <ul>
+    <li><b>% identity</b> — how similar the aligned region is.</li>
+    <li><b>E-value</b> — the number of hits this good you'd expect <i>by chance alone</i> in a database this
+        size. Lower is better; <code>1e-50</code> is a much stronger hit than <code>0.02</code>.</li>
+    <li><b>Bit score</b> — a normalized alignment quality score, comparable across different searches.</li>
+  </ul>
+  <div class="callout warn">A common beginner mistake: judging a hit only by % identity. A short 10 bp
+  100%-identical match is meaningless (E-value will be terrible); a 400 bp match at 85% identity with
+  E-value <code>1e-100</code> is a real, confident hit.</div>
+  </div>
+<div class="slide"><h2>Local BLAST (works fully offline, today's exercise)</h2>
+  <pre><code># One-time: build a searchable database from a FASTA file
+makeblastdb -in DREB2A_plant_orthologs.fasta -dbtype nucl -out dreb_db</code></pre>
+  <pre><code>import subprocess
+subprocess.run([
+    "blastn", "-query", "mystery_sequence_session10.fasta", "-db", "dreb_db",
+    "-outfmt", "6 qseqid sseqid pident length evalue bitscore",
+    "-out", "results.tsv",
+], check=True)
+
+with open("results.tsv") as f:
+    for line in f:
+        print(line.strip())</code></pre>
+  <div class="callout plant">Today's "mystery sequence" was isolated (in our teaching scenario) from a
+  drought-tolerant landrace. Your job: BLAST it against the DREB2A ortholog database and report which
+  known ortholog it's closest to, with the evidence to back up the claim.</div>
+  </div>
+<div class="slide"><h2>Remote BLAST against real NCBI (for when you have internet)</h2>
+  <pre><code>from Bio.Blast import NCBIWWW, NCBIXML
+
+with open("my_query.fasta") as f:
+    query = f.read()
+
+result_handle = NCBIWWW.qblast("blastn", "nt", query)   # searches ALL of NCBI's nt database
+blast_record = NCBIXML.read(result_handle)
+
+for alignment in blast_record.alignments[:5]:
+    for hsp in alignment.hsps:
+        print(alignment.title)
+        print(f"  E-value: {hsp.expect}  Identity: {hsp.identities}/{hsp.align_length}")</code></pre>
+  <div class="callout warn">Remote BLAST against the full <code>nt</code> database can take anywhere from
+  30 seconds to several minutes — NCBI queues jobs. Never loop this in a tight automated batch without
+  <code>time.sleep()</code> between calls, or NCBI may temporarily block your IP.</div>
+  </div>
+
+  <div class="navrow">
+    <div><a href="../session09_multiple_sequence_alignment/slides.html">← Session 9</a></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><a href="../session11_phylogenetics_building_trees/slides.html">Session 11 →</a></div>
+  </div>
+</div>
+</body>
+</html>

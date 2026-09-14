@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant Bioinformatics with Biopython — Course Home</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">A complete, self-contained, 4-week / 20-session course</div>
+    <h1>🌱 Plant Bioinformatics with Biopython</h1>
+    <div class="meta">For a tutor teaching beginners, 2 hours/day &middot; Python basics assumed &middot; every dataset included, offline-ready</div>
+  </header>
+
+  <div class="slide">
+    <h2>How to use this course</h2>
+    <p>Open any session's <code>slides.html</code> in a browser to present it. Each session folder also
+    contains <code>code_along.py</code> (live-code with your class) and <code>exercise.md</code> (hands-on
+    task + full answer key). All datasets used across the course live once in <code>/data</code> and are
+    shared by multiple sessions.</p>
+    <p>Start with <b><a href="SETUP_GUIDE.md">SETUP_GUIDE.md</a></b> to install Python + Biopython + the
+    small set of command-line tools (Clustal Omega, BLAST+) used in Weeks 2-3, before Session 1.</p>
+  </div>
+
+  <div class="slide"><h2>Week 1 — Foundations — Python, Biopython, sequence basics</h2><ol start="1"><li><a href="week1/session01_welcome_biology_primer/slides.html">Session 1: Welcome to Plant Bioinformatics + Biology Primer</a></li>
+<li><a href="week1/session02_python_biopython_setup/slides.html">Session 2: Environment Setup: Python + Biopython</a></li>
+<li><a href="week1/session03_fasta_genbank_seqio/slides.html">Session 3: File Formats: FASTA & GenBank with SeqIO</a></li>
+<li><a href="week1/session04_seq_object_transcription_translation/slides.html">Session 4: The Seq Object: Transcription & Translation</a></li>
+<li><a href="week1/session05_sequence_stats_gc_codon/slides.html">Session 5: Sequence Statistics: GC Content & Codon Usage</a></li>
+</ol></div>
+<div class="slide"><h2>Week 2 — Sequence Analysis & Databases — Entrez, alignment, BLAST</h2><ol start="6"><li><a href="week2/session06_entrez_ncbi/slides.html">Session 6: Talking to NCBI: Bio.Entrez</a></li>
+<li><a href="week2/session07_genbank_features_annotation/slides.html">Session 7: GenBank Features & Annotation Deep-Dive</a></li>
+<li><a href="week2/session08_pairwise_alignment/slides.html">Session 8: Pairwise Sequence Alignment</a></li>
+<li><a href="week2/session09_multiple_sequence_alignment/slides.html">Session 9: Multiple Sequence Alignment (MSA)</a></li>
+<li><a href="week2/session10_blast_identification/slides.html">Session 10: Sequence Identification with BLAST</a></li>
+</ol></div>
+<div class="slide"><h2>Week 3 — Evolution & Molecular Tools — phylogenetics, markers, proteins, populations</h2><ol start="11"><li><a href="week3/session11_phylogenetics_building_trees/slides.html">Session 11: Building Phylogenetic Trees</a></li>
+<li><a href="week3/session12_tree_visualization_interpretation/slides.html">Session 12: Tree Visualization & Interpretation</a></li>
+<li><a href="week3/session13_restriction_primer_caps/slides.html">Session 13: Restriction Sites & CAPS Marker Design</a></li>
+<li><a href="week3/session14_protein_analysis_motifs/slides.html">Session 14: Protein Analysis & Motif Finding</a></li>
+<li><a href="week3/session15_population_genetics_vcf/slides.html">Session 15: Population Genetics & VCF Files</a></li>
+</ol></div>
+<div class="slide"><h2>Week 4 — Genomics & Capstone — annotation, expression, GWAS, final project</h2><ol start="16"><li><a href="week4/session16_genome_regions_annotation/slides.html">Session 16: Genome Regions, Features & Annotation at Scale</a></li>
+<li><a href="week4/session17_gene_ontology_functional/slides.html">Session 17: Gene Ontology & Functional Annotation</a></li>
+<li><a href="week4/session18_rnaseq_expression_intro/slides.html">Session 18: Intro to RNA-seq & Gene Expression Analysis</a></li>
+<li><a href="week4/session19_gwas_manhattan_plots/slides.html">Session 19: GWAS Concepts & Manhattan Plots</a></li>
+<li><a href="week4/session20_capstone_pipeline/slides.html">Session 20: Capstone: A Complete Plant Genomics Mini-Pipeline</a></li>
+</ol></div>
+
+  <div class="slide">
+    <h2>Dataset library (<code>/data</code>)</h2>
+    <p>Every dataset is <b>synthetic-but-biologically-realistic</b> — built to mirror a real, named plant
+    gene/species/study so the course works fully offline and reproducibly. Each file documents the real
+    NCBI/TAIR record it represents and the exact search term to fetch the live version once you have
+    normal internet access.</p>
+    <table>
+      <tr><th>File</th><th>Represents</th><th>Used in</th></tr>
+      <tr><td>AT5G10140_FLC_synthetic_cds.fasta</td><td>Arabidopsis FLC (flowering repressor)</td><td>S2-5, 13</td></tr>
+      <tr><td>FLC_teaching_record.gb</td><td>FLC as an annotated GenBank record</td><td>S3, 7, 16</td></tr>
+      <tr><td>FLC_CAPS_marker_alleles.fasta</td><td>WT vs. SNP-mutant FLC allele pair</td><td>S13</td></tr>
+      <tr><td>DREB2A_plant_orthologs.fasta</td><td>5-species drought-TF gene family</td><td>S3, 5, 6, 8-11, 17-18, 20</td></tr>
+      <tr><td>Solanaceae_matK_barcodes.fasta</td><td>5-species nightshade DNA barcode</td><td>S9, 11-12</td></tr>
+      <tr><td>mystery_sequence_session10.fasta</td><td>Unknown sequence for BLAST ID</td><td>S10</td></tr>
+      <tr><td>NBS_LRR_resistance_proteins.fasta</td><td>4 plant disease-resistance proteins</td><td>S14</td></tr>
+      <tr><td>rice_diversity_panel_synthetic.vcf</td><td>10-accession rice SNP panel</td><td>S15</td></tr>
+      <tr><td>arabidopsis_drought_rnaseq_counts.csv</td><td>Control vs. drought RNA-seq counts</td><td>S17-18, 20</td></tr>
+      <tr><td>rice_plant_height_gwas.csv</td><td>Rice plant-height GWAS summary stats</td><td>S19</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

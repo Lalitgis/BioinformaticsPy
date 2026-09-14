@@ -1,0 +1,30 @@
+##fileformat=VCFv4.2
+##source=teaching-synthetic-dataset
+##INFO=<ID=GENE,Number=1,Type=String,Description="Nearby gene, teaching annotation">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Oryza_acc01	Oryza_acc02	Oryza_acc03	Oryza_acc04	Oryza_acc05	Oryza_acc06	Oryza_acc07	Oryza_acc08	Oryza_acc09	Oryza_acc10
+Chr1	1738	rs1000	A	C	99	PASS	GENE=Sub1A_submergence	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	2304	rs1001	A	G	99	PASS	GENE=SD1_semidwarf	GT	0/0	1/1	1/1	0/0	0/0	1/1	0/0	0/0	1/1	0/0
+Chr1	2840	rs1002	T	A	99	PASS	GENE=Badh2_fragrance	GT	0/0	0/0	0/0	0/0	0/0	0/0	1/1	0/0	0/0	0/1
+Chr1	3683	rs1003	C	T	99	PASS	GENE=GS3_grain_size	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	4194	rs1004	A	G	99	PASS	GENE=Badh2_fragrance	GT	0/1	1/1	0/0	0/0	1/1	0/0	0/0	0/1	0/0	1/1
+Chr1	4706	rs1005	C	G	99	PASS	GENE=Badh2_fragrance	GT	0/1	0/1	0/0	0/1	0/1	0/1	1/1	0/1	0/1	0/1
+Chr1	5111	rs1006	G	A	99	PASS	GENE=SD1_semidwarf	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	5383	rs1007	A	G	99	PASS	GENE=GS3_grain_size	GT	0/0	0/0	0/0	0/0	0/0	1/1	0/0	1/1	0/0	0/0
+Chr1	5814	rs1008	T	A	99	PASS	GENE=Wx_waxy	GT	1/1	0/0	0/1	0/0	0/1	0/0	0/0	0/0	0/0	0/0
+Chr1	5997	rs1009	G	C	99	PASS	GENE=Sub1A_submergence	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	6615	rs1010	A	G	99	PASS	GENE=Wx_waxy	GT	0/0	1/1	0/0	0/0	0/1	0/0	0/0	0/0	1/1	1/1
+Chr1	7392	rs1011	G	A	99	PASS	GENE=Wx_waxy	GT	1/1	0/1	1/1	0/0	0/0	1/1	1/1	0/1	0/0	0/0
+Chr1	7757	rs1012	T	G	99	PASS	GENE=Badh2_fragrance	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	8280	rs1013	T	C	99	PASS	GENE=GS3_grain_size	GT	0/1	0/0	0/1	0/0	0/1	0/0	1/1	0/1	0/0	0/0
+Chr1	8820	rs1014	C	A	99	PASS	GENE=Sub1A_submergence	GT	0/0	0/0	0/1	0/0	0/0	0/1	0/0	0/0	1/1	0/0
+Chr1	9277	rs1015	G	T	99	PASS	GENE=Wx_waxy	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	9475	rs1016	T	A	99	PASS	GENE=Sub1A_submergence	GT	0/0	0/1	1/1	0/0	0/0	0/0	1/1	1/1	1/1	1/1
+Chr1	10198	rs1017	G	C	99	PASS	GENE=SD1_semidwarf	GT	0/0	0/0	1/1	0/0	0/1	0/0	0/0	0/0	0/1	1/1
+Chr1	10711	rs1018	G	T	99	PASS	GENE=Wx_waxy	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	11360	rs1019	T	A	99	PASS	GENE=GS3_grain_size	GT	0/0	1/1	0/0	0/1	0/1	1/1	0/0	0/0	0/0	0/0
+Chr1	11583	rs1020	A	T	99	PASS	GENE=Badh2_fragrance	GT	0/1	1/1	1/1	1/1	1/1	0/0	0/0	1/1	0/0	1/1
+Chr1	12334	rs1021	T	C	99	PASS	GENE=Sub1A_submergence	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0
+Chr1	12672	rs1022	A	T	99	PASS	GENE=Sub1A_submergence	GT	1/1	0/0	0/1	0/1	0/0	0/0	0/0	0/0	0/0	0/0
+Chr1	12877	rs1023	A	C	99	PASS	GENE=Wx_waxy	GT	0/0	0/0	1/1	0/0	0/1	0/0	0/0	1/1	0/1	0/1
+Chr1	13317	rs1024	T	G	99	PASS	GENE=Sub1A_submergence	GT	1/1	1/1	1/1	1/1	1/1	0/0	0/0	0/0	0/0	0/0

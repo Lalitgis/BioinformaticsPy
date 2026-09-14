@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 20: Capstone: A Complete Plant Genomics Mini-Pipeline</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 4 &middot; Session 20 of 20 &middot; 2 hours</div>
+    <h1>Capstone: A Complete Plant Genomics Mini-Pipeline</h1>
+    <div class="meta"><span class="tag">SeqIO</span><span class="tag">Align</span><span class="tag">AlignIO</span><span class="tag">Phylo</span><span class="tag">ProteinAnalysis</span><span class="tag">pandas — everything, together</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Chain together SeqIO parsing, alignment, phylogenetics, motif scanning, and expression analysis into one pipeline.</div></div><div class="obj"><span class="badge-num">2</span><div>Present a short 'mini-paper style' summary of a biological finding, exactly as a research script would.</div></div><div class="obj"><span class="badge-num">3</span><div>Review the whole course roadmap and consolidate the mental model of a bioinformatics workflow.</div></div><div class="obj"><span class="badge-num">4</span><div>(For you as tutor) plan how to keep teaching this material: pacing, common student struggles, extensions.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">📁 DREB2A_plant_orthologs.fasta</span><span class="tag">📁 Solanaceae_matK_barcodes.fasta</span><span class="tag">📁 NBS_LRR_resistance_proteins.fasta</span><span class="tag">📁 arabidopsis_drought_rnaseq_counts.csv</span></div>
+  </div>
+
+  <div class="slide"><h2>The capstone brief</h2>
+  <p>Students (individually or in pairs) build one end-to-end script/notebook answering a single research
+  question, using only tools from this course. Suggested question:</p>
+  <div class="callout plant"><b>"Is the drought-response transcription factor DREB2A evolutionarily
+  conserved across plant lineages, and is its expression consistent with a real drought-response role?"</b></div>
+  <p>This requires touching nearly every session: sequence loading (S3), alignment (S8-9), phylogenetics
+  (S11-12), motif/protein analysis (S14), and expression data (S17-18) — a genuine synthesis exercise.</p>
+  </div>
+<div class="slide"><h2>The pipeline skeleton (fill in from earlier sessions)</h2>
+  <pre><code># 1. Load & inspect the DREB2A ortholog sequences (Session 3-5)
+# 2. Multiple sequence alignment (Session 9)
+# 3. Build a phylogenetic tree and check it against known plant taxonomy (Session 11-12)
+# 4. Translate each ortholog's DNA and confirm the protein has intact reading frames (Session 4)
+# 5. Report percent identity across all pairs (Session 8)
+# 6. Cross-reference with the RNA-seq drought expression data — is DREB2A really upregulated? (Session 18)
+# 7. Write a 3-5 sentence conclusion in plain English, citing your actual numbers</code></pre>
+  <div class="callout exercise">Every one of these steps is code students have already written in a prior
+  session — the capstone's whole point is realizing they can now <i>assemble</i> a real workflow from
+  parts they've mastered, not learning anything brand new.</div>
+  </div>
+<div class="slide"><h2>What a finished mini-report should look like</h2>
+  <div class="callout">
+  <b>Example structure (aim for ~half a page):</b>
+  <ol>
+    <li><b>Question:</b> one sentence.</li>
+    <li><b>Methods:</b> 2-3 sentences naming the data and tools used (sequences, alignment, tree method).</li>
+    <li><b>Results:</b> the key numbers — e.g., "DREB2A orthologs show 78-95% pairwise DNA identity across
+        5 species; the resulting NJ tree correctly separates monocots (rice, maize) from dicots
+        (Arabidopsis, soybean, tomato); DREB2A shows a log2 fold-change of +2.2 under drought stress."</li>
+    <li><b>Conclusion:</b> what this suggests biologically, and one honest limitation of the analysis
+        (e.g., "synthetic teaching data, small sample size, no statistical test applied to expression change").</li>
+  </ol></div>
+  </div>
+<div class="slide"><h2>For you, the tutor — running this course going forward</h2>
+  <ul>
+    <li><b>Pacing:</b> Weeks 1-2 are usually comfortable at 2h/session; Weeks 3-4 (phylogenetics, stats-heavy
+        sessions) often need the full 2 hours plus follow-up office hours for slower students — build in
+        slack, don't rush the tree-building or GWAS sessions.</li>
+    <li><b>Common struggles:</b> off-by-one errors in sequence slicing (Session 4), confusing
+        <code>SeqIO.read</code> vs <code>.parse</code> (Session 3), and forgetting <code>str()</code>
+        conversions when mixing <code>Seq</code> objects with regex/pandas (Sessions 14, 15).</li>
+    <li><b>Where to go next:</b> real NCBI Entrez fetching (Session 6, with real internet), local BLAST
+        against a full reference genome, RNA-seq from raw FASTQ (Session 18 extension), and a real
+        statistics course module (R + DESeq2, or PyDESeq2) once students want to move beyond fold-change
+        thresholds.</li>
+    <li><b>Re-teaching:</b> every session folder is self-contained (<code>slides.html</code>,
+        <code>code_along.py</code>, <code>exercise.md</code>) — reuse this course indefinitely, and feel
+        free to swap in your own local crop species/datasets once your students want something specific
+        to their region's agriculture.</li>
+  </ul>
+  </div>
+
+  <div class="navrow">
+    <div><a href="../session19_gwas_manhattan_plots/slides.html">← Session 19</a></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><span>Capstone complete 🎉</span></div>
+  </div>
+</div>
+</body>
+</html>

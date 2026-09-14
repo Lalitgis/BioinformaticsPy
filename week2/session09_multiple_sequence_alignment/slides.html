@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 9: Multiple Sequence Alignment (MSA)</title>
+<style>
+:root{
+  --bg:#0f1a14; --panel:#16261d; --accent:#6bbf59; --accent2:#a3d977;
+  --text:#eaf3e6; --muted:#a9c2a0; --code-bg:#0b140f; --border:#2a3d2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+}
+.deck{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header.hero{
+  padding:40px 16px 24px; text-align:left; border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+header.hero .kicker{color:var(--accent2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:.8rem}
+header.hero h1{font-size:2rem; margin:.3em 0 .2em}
+header.hero .meta{color:var(--muted); font-size:.95rem}
+.slide{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; margin:22px 0;
+}
+.slide h2{margin-top:0; color:var(--accent2); font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:10px}
+.slide h3{color:var(--accent2); font-size:1.05rem; margin-bottom:6px}
+.slide ul, .slide ol{padding-left:1.3em; margin:.6em 0}
+.slide li{margin:.35em 0}
+.tag{
+  display:inline-block; background:rgba(107,191,89,.15); color:var(--accent2);
+  border:1px solid rgba(107,191,89,.35); border-radius:999px; padding:2px 10px;
+  font-size:.75rem; margin:2px 6px 2px 0;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-size:.85rem; line-height:1.45;
+}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.slide p code, .slide li code{background:var(--code-bg); padding:1px 5px; border-radius:5px; border:1px solid var(--border)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.callout{
+  border-left:3px solid var(--accent); background:rgba(107,191,89,.08);
+  padding:10px 14px; border-radius:0 8px 8px 0; margin:.8em 0;
+}
+.callout.plant{border-left-color:#c98b3a; background:rgba(201,139,58,.10)}
+.callout.exercise{border-left-color:#4a90d9; background:rgba(74,144,217,.10)}
+.callout.warn{border-left-color:#d9534f; background:rgba(217,83,79,.10)}
+.badge-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#0b140f; font-weight:700; margin-right:10px; flex:none;
+}
+.obj{display:flex; align-items:flex-start; margin:.5em 0}
+.navrow{display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem; margin-top:30px; padding-top:16px; border-top:1px solid var(--border)}
+.navrow a{color:var(--accent2); text-decoration:none}
+.navrow a:hover{text-decoration:underline}
+table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:6px 10px; text-align:left}
+th{background:rgba(255,255,255,.04); color:var(--accent2)}
+.footer-note{color:var(--muted); font-size:.8rem; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="hero">
+    <div class="kicker">Plant Bioinformatics with Biopython &middot; Week 2 &middot; Session 9 of 20 &middot; 2 hours</div>
+    <h1>Multiple Sequence Alignment (MSA)</h1>
+    <div class="meta"><span class="tag">Bio.AlignIO</span><span class="tag">subprocess + Clustal Omega</span></div>
+  </header>
+
+  <div class="slide">
+    <h2>🎯 Learning objectives</h2>
+    <div class="obj"><span class="badge-num">1</span><div>Explain why MSA (not just pairwise) is needed for gene-family and phylogenetic analysis.</div></div><div class="obj"><span class="badge-num">2</span><div>Run Clustal Omega from Python (via subprocess) to align a plant gene family.</div></div><div class="obj"><span class="badge-num">3</span><div>Load and inspect the resulting alignment with Bio.AlignIO.</div></div><div class="obj"><span class="badge-num">4</span><div>Identify conserved columns/blocks in an MSA — a proxy for functionally important regions.</div></div>
+    <div class="footer-note">Datasets used this session: <span class="tag">📁 DREB2A_plant_orthologs.fasta</span></div>
+  </div>
+
+  <div class="slide"><h2>Why not just do pairwise alignments for everything?</h2>
+  <p>With 5 sequences you'd need 10 separate pairwise alignments, and they wouldn't even agree with each
+  other on where gaps go. A <b>multiple sequence alignment (MSA)</b> aligns all sequences together in one
+  consistent set of columns — essential before building a phylogenetic tree (Session 11) or scanning for
+  conserved motifs (Session 14).</p>
+  <div class="callout">Real MSA algorithms (Clustal Omega, MUSCLE, MAFFT) use a <b>progressive</b> strategy:
+  build a rough guide tree from pairwise distances, then align the most similar sequences first and
+  progressively add more distant ones.</div>
+  </div>
+<div class="slide"><h2>Installing an aligner (one-time setup)</h2>
+  <pre><code># Ubuntu/Debian
+sudo apt-get install clustalo
+
+# macOS with Homebrew
+brew install clustal-omega
+
+# Conda (any OS)
+conda install -c bioconda clustalo</code></pre>
+  <p>Biopython no longer ships built-in wrapper classes for external aligners (they were removed from
+  recent versions) — the modern approach is simply to call the command-line tool with Python's
+  <code>subprocess</code> module, which is what we do today.</p>
+  </div>
+<div class="slide"><h2>Running Clustal Omega from Python</h2>
+  <pre><code>import subprocess
+
+subprocess.run([
+    "clustalo",
+    "-i", "DREB2A_plant_orthologs.fasta",
+    "-o", "dreb2a_aligned.fasta",
+    "--outfmt=fasta",
+    "--force",
+], check=True)</code></pre>
+  <p>Then load the result with Biopython's alignment reader (note: <code>AlignIO</code>, different from
+  <code>SeqIO</code>, because now every sequence in the file is the same length, padded with <code>-</code>
+  gap characters):</p>
+  <pre><code>from Bio import AlignIO
+alignment = AlignIO.read("dreb2a_aligned.fasta", "fasta")
+print(alignment)
+print("Alignment length (with gaps):", alignment.get_alignment_length())</code></pre>
+  </div>
+<div class="slide"><h2>Reading an MSA: conserved vs. variable columns</h2>
+  <pre><code>for col in range(alignment.get_alignment_length()):
+    column = alignment[:, col]     # every sequence's base at this column
+    if len(set(column)) == 1:
+        pass  # fully conserved column
+</code></pre>
+  <div class="callout plant">Columns that are identical across <i>all</i> species despite ~150 million
+  years of divergence (dicots vs. grasses) are very likely under strong purifying selection — often the
+  DNA-binding domain or catalytic core of the protein. Today's exercise has students find and report the
+  single most conserved stretch in the DREB2A alignment — a real, if simplified, taste of comparative
+  genomics used to prioritize candidate functional residues.</div>
+  </div>
+
+  <div class="navrow">
+    <div><a href="../session08_pairwise_alignment/slides.html">← Session 8</a></div>
+    <div><a href="../../README.html">↑ Course home</a></div>
+    <div><a href="../session10_blast_identification/slides.html">Session 10 →</a></div>
+  </div>
+</div>
+</body>
+</html>
